@@ -26,6 +26,7 @@ async def parse_cmd():
     parser.add_argument('--cookies', type=str,
                         help='cookies used for cookie login type', default=config.COOKIES)
     parser.add_argument('--xhs_specified_ids', type=str, default=','.join(config.XHS_SPECIFIED_ID_LIST))
+    parser.add_argument('--max_notes_count', type=int, default=30)
 
     args = parser.parse_args()
 
@@ -40,3 +41,4 @@ async def parse_cmd():
     config.SAVE_DATA_OPTION = args.save_data_option
     config.COOKIES = args.cookies
     config.XHS_SPECIFIED_ID_LIST = args.xhs_specified_ids.split(',')
+    config.CRAWLER_MAX_NOTES_COUNT = args.max_notes_count
