@@ -1,3 +1,14 @@
+# 声明：本代码仅供学习和研究目的使用。使用者应遵守以下原则：  
+# 1. 不得用于任何商业用途。  
+# 2. 使用时应遵守目标平台的使用条款和robots.txt规则。  
+# 3. 不得进行大规模爬取或对平台造成运营干扰。  
+# 4. 应合理控制请求频率，避免给目标平台带来不必要的负担。   
+# 5. 不得用于任何非法或不当的用途。
+#   
+# 详细许可条款请参阅项目根目录下的LICENSE文件。  
+# 使用本代码即表示您同意遵守上述原则和LICENSE中的所有条款。  
+
+
 # -*- coding: utf-8 -*-
 # @Author  : relakkes@gmail.com
 # @Time    : 2023/12/2 18:44
@@ -114,6 +125,8 @@ class BilibiliCrawler(AbstractCrawler):
                     page=page,
                     page_size=bili_limit_count,
                     order=SearchOrderType.DEFAULT,
+                    pubtime_begin_s=0, # 作品发布日期起始时间戳
+                    pubtime_end_s=0 # 作品发布日期结束日期时间戳
                 )
                 video_list: List[Dict] = videos_res.get("result")
 
@@ -262,7 +275,11 @@ class BilibiliCrawler(AbstractCrawler):
                 return None
 
     async def create_bilibili_client(self, httpx_proxy: Optional[str]) -> BilibiliClient:
-        """Create xhs client"""
+        """
+        create bilibili client
+        :param httpx_proxy: httpx proxy
+        :return: bilibili client
+        """
         utils.logger.info(
             "[BilibiliCrawler.create_bilibili_client] Begin create bilibili API client ...")
         cookie_str, cookie_dict = utils.convert_cookies(await self.browser_context.cookies())
@@ -282,7 +299,11 @@ class BilibiliCrawler(AbstractCrawler):
 
     @staticmethod
     def format_proxy_info(ip_proxy_info: IpInfoModel) -> Tuple[Optional[Dict], Optional[Dict]]:
-        """format proxy info for playwright and httpx"""
+        """
+        format proxy info for playwright and httpx
+        :param ip_proxy_info: ip proxy info
+        :return: playwright proxy, httpx proxy
+        """
         playwright_proxy = {
             "server": f"{ip_proxy_info.protocol}{ip_proxy_info.ip}:{ip_proxy_info.port}",
             "username": ip_proxy_info.user,
@@ -300,7 +321,14 @@ class BilibiliCrawler(AbstractCrawler):
             user_agent: Optional[str],
             headless: bool = True
     ) -> BrowserContext:
-        """Launch browser and create browser context"""
+        """ 
+        launch browser and create browser context
+        :param chromium: chromium browser
+        :param playwright_proxy: playwright proxy
+        :param user_agent: user agent
+        :param headless: headless mode
+        :return: browser context
+        """
         utils.logger.info(
             "[BilibiliCrawler.launch_browser] Begin create browser context ...")
         if config.SAVE_LOGIN_STATE:
